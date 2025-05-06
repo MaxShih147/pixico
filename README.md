@@ -1,6 +1,12 @@
 # Pixico
 
-Pixico is a simple cross-platform image utility app built with Flutter. It allows you to import any image, resize it into a pixelated version at a custom resolution, and (soon) apply custom color replacements. Designed for ease of use and quick deployment on desktop and web.
+**Pixico** is an open-source pixel image utility built with Flutter. It helps designers, developers, and hobbyists quickly convert any image into a stylized pixel-art version.
+
+Perfect for:
+
+* Creating pixel icons or low-res thumbnails
+* Simplifying artwork for retro games or design
+* Exploring palette remapping workflows (coming soon)
 
 ## Features
 
