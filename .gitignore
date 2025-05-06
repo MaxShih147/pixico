@@ -1,0 +1,33 @@
+# Flutter & Dart
+.dart_tool/
+.packages
+.pub-cache/
+.pub/
+build/
+*.lock
+
+# iOS & macOS
+ios/Flutter/.last_build_id
+ios/Pods/
+macos/Pods/
+macos/Flutter/ephemeral/
+
+# Android
+android/.gradle/
+android/app/build/
+
+# Web
+web/.dart_tool/
+web/build/
+
+# IDEs
+.idea/
+*.iml
+.vscode/
+
+# OS / Misc
+.DS_Store
+*.log
+*.class
+*.pyc
+*.swp
