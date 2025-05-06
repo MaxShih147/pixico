@@ -38,6 +38,24 @@ class PixicoHome extends StatefulWidget {
 }
 
 class _PixicoHomeState extends State<PixicoHome> {
+  String _twoDigits(int n) => n.toString().padLeft(2, '0');
+  String _monthName(int month) =>
+      [
+        '',
+        'Jan',
+        'Feb',
+        'Mar',
+        'Apr',
+        'May',
+        'Jun',
+        'Jul',
+        'Aug',
+        'Sep',
+        'Oct',
+        'Nov',
+        'Dec',
+      ][month];
+
   Uint8List? originalBytes;
   Uint8List? pixelatedBytes;
   int pixelWidth = 32;
@@ -96,14 +114,19 @@ class _PixicoHomeState extends State<PixicoHome> {
   Future<void> saveToGallery() async {
     if (pixelatedBytes == null) return;
 
+    final timestamp = DateTime.now();
+    final formatted =
+        "${pixelWidth}x${pixelHeight}_${timestamp.year}.${_monthName(timestamp.month)}.${_twoDigits(timestamp.day)}_${_twoDigits(timestamp.hour)}.${_twoDigits(timestamp.minute)}.${_twoDigits(timestamp.second)}";
+    final filename = "pixico_${formatted}.png";
+
     if (kIsWeb) {
-      downloadImageWeb(pixelatedBytes!, 'pixelated.png');
+      downloadImageWeb(pixelatedBytes!, filename);
       return;
     }
 
     final tempDir = await getTemporaryDirectory();
     final file = await File(
-      '${tempDir.path}/pixelated.png',
+      '${tempDir.path}/$filename',
     ).writeAsBytes(pixelatedBytes!);
     await ImageGallerySaver.saveFile(file.path);
 
@@ -160,20 +183,15 @@ class _PixicoHomeState extends State<PixicoHome> {
             const SizedBox(height: 16),
             if (isLoading)
               const CircularProgressIndicator()
-            else if (pixelatedBytes != null)
+            else if (pixelatedBytes != null && originalBytes != null)
               Expanded(
-                child: Center(
-                  child: Container(
-                    width: fixedDisplaySize,
-                    height: fixedDisplaySize,
-                    alignment: Alignment.center,
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.black, width: 1),
-                      color: Colors.white,
-                    ),
-                    child: Image.memory(pixelatedBytes!),
-                  ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    _buildLabeledImage("Original", originalBytes!),
+                    const SizedBox(width: 16),
+                    _buildLabeledImage("Pixelated", pixelatedBytes!),
+                  ],
                 ),
               )
             else
@@ -181,6 +199,26 @@ class _PixicoHomeState extends State<PixicoHome> {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildLabeledImage(String label, Uint8List bytes) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text(label, style: const TextStyle(fontWeight: FontWeight.bold)),
+        const SizedBox(height: 8),
+        Container(
+          width: 300,
+          height: 300,
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.black),
+            color: Colors.white,
+          ),
+          child: Image.memory(bytes),
+        ),
+      ],
     );
   }
 }
